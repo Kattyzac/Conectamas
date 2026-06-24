@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Conecta+ | Tracker AGEXPORT</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--az:#0A1A3A;--el:#128BFF;--ci:#00CBFF;--li:#A6E22E;--bg:#ffffff;--bg2:#f7f9fc;--bg3:#eef2f7;--txt:#1a202c;--txt2:#718096;--bd:#e2e8f0;--bd2:#cbd5e0;--ok:#38a169;--warn:#d97706;--danger:#e53e3e}
+@media(prefers-color-scheme:dark){:root{--bg:#1a202c;--bg2:#2d3748;--bg3:#4a5568;--txt:#f7fafc;--txt2:#a0aec0;--bd:#4a5568;--bd2:#718096}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--txt);font-size:15px;min-height:100vh}
+.app{max-width:480px;margin:0 auto;padding:.75rem}
+.header{background:var(--az);color:#fff;padding:1rem 1.25rem;border-radius:14px;margin-bottom:.75rem}
+.header h1{font-size:19px;font-weight:600}
+.header .sub{font-size:12px;opacity:.65;margin-top:2px}
+.progress-bar-wrap{background:rgba(255,255,255,.2);border-radius:20px;height:6px;margin:10px 0 4px}
+.progress-bar{background:var(--li);border-radius:20px;height:6px;transition:width .4s}
+.progress-label{font-size:11px;opacity:.75}
+.tabs{display:flex;gap:6px;margin-bottom:.75rem}
+.tab{flex:1;padding:9px 4px;border:1px solid var(--bd2);background:var(--bg);border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;color:var(--txt2);text-align:center;transition:all .15s}
+.tab.active{background:var(--az);color:#fff;border-color:var(--az)}
+.section{display:none}.section.active{display:block}
+.card{background:var(--bg);border:1px solid var(--bd);border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.card-title{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.875rem}
+.field{margin-bottom:.875rem}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;font-size:14px;padding:9px 12px;border:1px solid var(--bd2);border-radius:9px;background:var(--bg);color:var(--txt);-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--el)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px}
+.chip{padding:6px 12px;border:1px solid var(--bd2);border-radius:20px;font-size:12px;cursor:pointer;background:var(--bg);color:var(--txt2);transition:all .15s;user-select:none}
+.chip.sel{background:var(--el);color:#fff;border-color:var(--el)}
+.stars{display:flex;gap:8px;margin-top:5px}
+.star{font-size:26px;cursor:pointer;color:var(--bd2);transition:color .1s;line-height:1}
+.star.on{color:#f0b429}
+.btn-primary{width:100%;padding:13px;background:var(--az);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:.5rem;letter-spacing:.2px}
+.btn-primary:active{opacity:.85}
+.btn-sec{width:100%;padding:10px;background:var(--bg);color:var(--txt);border:1px solid var(--bd2);border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-sec:active{background:var(--bg2)}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.875rem}
+.metric{background:var(--bg2);border-radius:10px;padding:1rem;text-align:center}
+.metric .val{font-size:26px;font-weight:600;color:var(--txt)}
+.metric .lbl{font-size:12px;color:var(--txt2);margin-top:3px}
+.semaforo{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;font-size:13px;font-weight:500;margin-bottom:.875rem}
+.dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.visit-row{padding:12px 0;border-bottom:1px solid var(--bd)}
+.visit-row:last-child{border-bottom:none}
+.visit-top{display:flex;justify-content:space-between;align-items:flex-start}
+.visit-name{font-size:15px;font-weight:600}
+.visit-meta{font-size:12px;color:var(--txt2);margin-top:3px;line-height:1.6}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;margin:2px 2px 0 0}
+.badge-ok{background:#f0fdf4;color:#166534}
+.badge-warn{background:#fffbeb;color:#92400e}
+.badge-danger{background:#fef2f2;color:#991b1b}
+.delete-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:13px;padding:3px 7px;border-radius:6px;flex-shrink:0;margin-left:6px}
+.sync-input{display:flex;gap:7px;margin-top:5px}
+.sync-input input{flex:1;font-size:13px;padding:8px 10px;border:1px solid var(--bd2);border-radius:9px;background:var(--bg);color:var(--txt)}
+.sync-input button{padding:8px 14px;background:var(--el);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.alert{padding:10px 13px;border-radius:9px;font-size:13px;margin:.5rem 0;line-height:1.6}
+.alert-info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.alert-success{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.alert-warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.month-bars{display:flex;align-items:flex-end;gap:8px;height:80px;margin:12px 0 6px}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:height .3s;min-height:3px}
+.bar-lbl{font-size:10px;color:var(--txt2)}
+.bar-num{font-size:10px;font-weight:600;color:var(--txt)}
+.meta-row{display:flex;justify-content:space-around;font-size:11px;color:var(--txt2)}
+.empty{text-align:center;color:var(--txt2);font-size:13px;padding:2rem 1rem;line-height:1.7}
+.search-wrap{margin-bottom:.75rem}
+.search-wrap input{width:100%;font-size:14px;padding:10px 14px;border:1px solid var(--bd2);border-radius:10px;background:var(--bg);color:var(--txt)}
+.form-msg{margin-top:.5rem;padding:10px 13px;border-radius:9px;font-size:13px;display:none}
+.section-head{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.7px;margin:.875rem 0 .5rem}
+.temas-freq .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.temas-freq .row:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <h1><i class="ti ti-chart-bar" style="font-size:17px;margin-right:6px;vertical-align:-2px"></i>Plan Conecta+</h1>
+  <div class="sub">Comisión de Manufacturas Diversas · AGEXPORT 2026</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
+  <div class="progress-label" id="progLabel">0 / 35 visitas completadas</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dashboard')"><i class="ti ti-home"></i> Panel</div>
+  <div class="tab" onclick="showTab('nueva')"><i class="ti ti-plus"></i> Nueva</div>
+  <div class="tab" onclick="showTab('historial')"><i class="ti ti-file"></i> Visitas</div>
+  <div class="tab" onclick="showTab('config')"><i class="ti ti-settings"></i> Config</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="section active" id="tab-dashboard">
+  <div class="metric-grid">
+    <div class="metric"><div class="val" id="m-total">0</div><div class="lbl">Visitadas</div></div>
+    <div class="metric"><div class="val" id="m-pend" style="color:var(--warn)">35</div><div class="lbl">Pendientes</div></div>
+    <div class="metric"><div class="val" id="m-seg">0</div><div class="lbl">Con seguimiento</div></div>
+    <div class="metric"><div class="val" id="m-mes">0</div><div class="lbl">Este mes</div></div>
+  </div>
+  <div id="semaforo-box"></div>
+  <div class="card">
+    <div class="card-title">Avance por mes</div>
+    <div class="month-bars" id="monthBars"></div>
+    <div class="meta-row">
+      <span>Jul <b>10</b></span><span>Ago <b>8</b></span><span>Sep <b>10</b></span><span>Oct <b>4</b></span><span>Nov <b>3</b></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Temas más frecuentes</div>
+    <div class="temas-freq" id="topTemas"><div class="empty" style="padding:1rem">Sin registros aún</div></div>
+  </div>
+  <button class="btn-sec" onclick="exportCSV()"><i class="ti ti-download"></i> Exportar CSV para Excel de gerencia</button>
+  <button class="btn-sec" onclick="exportJSON()"><i class="ti ti-download"></i> Backup completo (JSON)</button>
+</div>
+
+<!-- NUEVA VISITA -->
+<div class="section" id="tab-nueva">
+  <div class="card">
+    <div class="card-title">Datos de la visita</div>
+    <div class="field"><label>Empresa *</label><input id="f-empresa" placeholder="Nombre de la empresa" /></div>
+    <div class="field"><label>NIT / Código</label><input id="f-nit" placeholder="Ej. 3536838-1" /></div>
+    <div class="field"><label>Fecha de visita *</label><input id="f-fecha" type="date" /></div>
+    <div class="field"><label>Comisión</label>
+      <select id="f-comision">
+        <option value="">Seleccionar</option>
+        <option>Muebles y Productos de Madera</option>
+        <option>Cosméticos e Higiénicos</option>
+        <option>Alimentos y Bebidas</option>
+        <option>Hecho a Mano</option>
+        <option>Farmacéuticos</option>
+        <option>Plásticos</option>
+        <option>Servicios de Exportación</option>
+        <option>Manufacturas Diversas</option>
+      </select>
+    </div>
+    <div class="field"><label>Segmento</label>
+      <select id="f-segmento">
+        <option value="">Seleccionar</option>
+        <option>Exportador Líder</option>
+        <option>Exportador Experto</option>
+        <option>Exportador Emergente</option>
+        <option>Exportador Potencial Promesa</option>
+        <option>Exportador Potencial en Desarrollo</option>
+        <option>Coexportador / Indirecto</option>
+        <option>Proveedor</option>
+        <option>No segmentado</option>
+      </select>
+    </div>
+    <div class="field"><label>Estado asociado</label>
+      <select id="f-estado">
+        <option value="">Seleccionar</option>
+        <option>Activo</option><option>Inactivo</option><option>En riesgo</option><option>Prospecto</option>
+      </select>
+    </div>
+    <div class="field"><label>Responsable de la visita</label>
+      <select id="f-resp"><option>Katty</option><option>Especialista</option><option>Ambas</option></select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Información de la empresa</div>
+    <div class="field"><label>¿Qué producen / actividad principal?</label><textarea id="f-productos" placeholder="Ej. Muebles de madera de pino, línea residencial y corporativa"></textarea></div>
+    <div class="field"><label>¿Actualmente exportan?</label>
+      <select id="f-exporta">
+        <option value="">Seleccionar</option>
+        <option>Sí, activamente</option><option>Sí, pero esporádicamente</option>
+        <option>No, pero tienen interés</option><option>No exportan</option>
+      </select>
+    </div>
+    <div class="field"><label>¿A dónde exportan actualmente?</label><input id="f-destinos" placeholder="Ej. El Salvador, Honduras, EE.UU." /></div>
+    <div class="field"><label>¿A dónde les interesa exportar?</label><input id="f-destinos-int" placeholder="Ej. México, Costa Rica, Europa" /></div>
+    <div class="field"><label>¿Cómo se diferencian de la competencia?</label><textarea id="f-diferenciacion" placeholder="Ej. Diseño propio, certificación FSC, precio competitivo..."></textarea></div>
+    <div class="field"><label>Capacidad instalada vs. utilizada</label><input id="f-capacidad" placeholder="Ej. Operan al 60% de capacidad" /></div>
+    <div class="field"><label>Producción mensual aprox.</label><input id="f-produccion" placeholder="Ej. 500 unidades / mes" /></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Diagnóstico</div>
+    <div class="field">
+      <label>Temas de interés</label>
+      <div class="chips" id="chips-temas">
+        <div class="chip" onclick="toggleChip(this)">Vinculación comercial</div>
+        <div class="chip" onclick="toggleChip(this)">Ferias internacionales</div>
+        <div class="chip" onclick="toggleChip(this)">Capacitación</div>
+        <div class="chip" onclick="toggleChip(this)">Normativa / registros</div>
+        <div class="chip" onclick="toggleChip(this)">Expansión de mercados</div>
+        <div class="chip" onclick="toggleChip(this)">Marca privada</div>
+        <div class="chip" onclick="toggleChip(this)">Inteligencia de mercados</div>
+        <div class="chip" onclick="toggleChip(this)">Innovación / empaque</div>
+        <div class="chip" onclick="toggleChip(this)">Financiamiento</div>
+        <div class="chip" onclick="toggleChip(this)">Otro</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Servicios AGEXPORT ya usados</label>
+      <div class="chips" id="chips-servicios">
+        <div class="chip" onclick="toggleChip(this)">Ferias</div>
+        <div class="chip" onclick="toggleChip(this)">Misiones comerciales</div>
+        <div class="chip" onclick="toggleChip(this)">Capacitaciones</div>
+        <div class="chip" onclick="toggleChip(this)">Asesoría personalizada</div>
+        <div class="chip" onclick="toggleChip(this)">Micrositio comisión</div>
+        <div class="chip" onclick="toggleChip(this)">Vinculación institucional</div>
+        <div class="chip" onclick="toggleChip(this)">Ninguno</div>
+      </div>
+    </div>
+    <div class="field"><label>Barreras / dolores identificados</label><textarea id="f-barreras" placeholder="¿Qué obstáculos mencionaron?"></textarea></div>
+    <div class="field"><label>Oportunidad detectada</label><textarea id="f-oportunidad" placeholder="¿Qué necesidad puede atender AGEXPORT?"></textarea></div>
+    <div class="field"><label>Compromiso / próximo paso acordado</label><input id="f-compromiso" placeholder="Ej. Enviar información del Foro de Innovacción" /></div>
+    <div class="field"><label>Fecha próximo seguimiento</label><input id="f-seguimiento" type="date" /></div>
+    <div class="field"><label>Resultado de la visita</label>
+      <select id="f-resultado">
+        <option value="">Seleccionar</option>
+        <option>Oportunidad detectada</option><option>Seguimiento requerido</option>
+        <option>Renovación / fidelización</option><option>Caso resuelto</option>
+        <option>Sin interés</option><option>Escalar a otra área</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Nivel de satisfacción con AGEXPORT</label>
+      <div class="stars" id="stars">
+        <span class="star" onclick="setStar(1)">★</span><span class="star" onclick="setStar(2)">★</span>
+        <span class="star" onclick="setStar(3)">★</span><span class="star" onclick="setStar(4)">★</span>
+        <span class="star" onclick="setStar(5)">★</span>
+      </div>
+    </div>
+    <div class="field"><label>Riesgo de deserción</label>
+      <select id="f-riesgo">
+        <option value="">Seleccionar</option>
+        <option>Bajo</option><option>Medio</option><option>Alto</option><option>Crítico</option>
+      </select>
+    </div>
+    <div class="field"><label>Mora de pagos</label>
+      <select id="f-mora"><option>No</option><option>Sí</option><option>En gestión</option></select>
+    </div>
+    <div class="field"><label>Observaciones internas</label><textarea id="f-obs" placeholder="Notas, contexto, cosas a recordar..."></textarea></div>
+  </div>
+
+  <button class="btn-primary" onclick="guardarVisita()"><i class="ti ti-check"></i> Guardar visita</button>
+  <div class="form-msg" id="form-msg"></div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="section" id="tab-historial">
+  <div class="search-wrap"><input id="buscar" placeholder="Buscar empresa..." oninput="renderHistorial()" /></div>
+  <div class="card" id="lista-visitas"><div class="empty">Aún no hay visitas registradas.<br>Ve a "Nueva" para comenzar.</div></div>
+</div>
+
+<!-- CONFIG -->
+<div class="section" id="tab-config">
+  <div class="card">
+    <div class="card-title">Sincronización Google Sheets</div>
+    <div class="alert alert-info">
+      <i class="ti ti-info-circle"></i> Pega la URL de tu Apps Script para sincronizar visitas en tiempo real con tu asistente.
+    </div>
+    <div class="field" style="margin-top:.75rem"><label>URL de Apps Script</label>
+      <div class="sync-input">
+        <input id="sheet-url" placeholder="https://script.google.com/macros/s/..." />
+        <button onclick="saveSheetUrl()">Guardar</button>
+      </div>
+    </div>
+    <div id="sheet-status"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Para tu asistente</div>
+    <div style="font-size:13px;color:var(--txt2);line-height:1.75">
+      Tu asistente solo necesita:<br><br>
+      <b>1.</b> Abrir este mismo archivo HTML en su navegador<br>
+      <b>2.</b> Ir a Config y pegar la misma URL de Apps Script<br>
+      <b>3.</b> Registrar visitas normalmente<br><br>
+      Todo aparecerá en tiempo real en el Google Sheet compartido. No necesita cuenta de Claude ni ningún otro servicio.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Respaldo de datos locales</div>
+    <div style="font-size:13px;color:var(--txt2);margin-bottom:.75rem">Visitas en este dispositivo: <b id="local-count">0</b></div>
+    <button class="btn-sec" onclick="exportCSV()"><i class="ti ti-download"></i> Exportar CSV (formato gerencia)</button>
+    <button class="btn-sec" onclick="exportJSON()"><i class="ti ti-download"></i> Backup JSON completo</button>
+    <button class="btn-sec" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i> Restaurar desde backup JSON</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)" />
+  </div>
+</div>
+</div>
+
+<script>
+const METAS={7:10,8:8,9:10,10:4,11:3};
+const MESES=['Jul','Ago','Sep','Oct','Nov'];
+let starVal=0;
+let visitas=[];
+try{visitas=JSON.parse(localStorage.getItem('cp_visitas')||'[]')}catch(e){}
+
+function save(){localStorage.setItem('cp_visitas',JSON.stringify(visitas))}
+
+function showTab(t){
+  const ids=['dashboard','nueva','historial','config'];
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',ids[i]===t));
+  document.querySelectorAll('.section').forEach(el=>el.classList.toggle('active',el.id==='tab-'+t));
+  if(t==='dashboard')renderDashboard();
+  if(t==='historial')renderHistorial();
+  if(t==='config'){
+    document.getElementById('local-count').textContent=visitas.length;
+    const u=localStorage.getItem('cp_sheet_url')||'';
+    document.getElementById('sheet-url').value=u;
+  }
+}
+
+function toggleChip(el){el.classList.toggle('sel')}
+
+function setStar(n){
+  starVal=n;
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));
+}
+
+function getChips(id){return[...document.querySelectorAll('#'+id+' .chip.sel')].map(c=>c.textContent).join(', ')}
+
+function guardarVisita(){
+  const empresa=document.getElementById('f-empresa').value.trim();
+  const fecha=document.getElementById('f-fecha').value;
+  if(!empresa||!fecha){showMsg('Completa al menos empresa y fecha.','warn');return;}
+  const v={
+    id:'V.'+(visitas.length+1),fecha,empresa,
+    nit:document.getElementById('f-nit').value.trim(),
+    comision:document.getElementById('f-comision').value,
+    segmento:document.getElementById('f-segmento').value,
+    estado:document.getElementById('f-estado').value,
+    responsable:document.getElementById('f-resp').value,
+    productos:document.getElementById('f-productos').value.trim(),
+    exporta:document.getElementById('f-exporta').value,
+    destinos:document.getElementById('f-destinos').value.trim(),
+    destinosInt:document.getElementById('f-destinos-int').value.trim(),
+    diferenciacion:document.getElementById('f-diferenciacion').value.trim(),
+    capacidad:document.getElementById('f-capacidad').value.trim(),
+    produccion:document.getElementById('f-produccion').value.trim(),
+    temas:getChips('chips-temas'),
+    servicios:getChips('chips-servicios'),
+    barreras:document.getElementById('f-barreras').value.trim(),
+    oportunidad:document.getElementById('f-oportunidad').value.trim(),
+    compromiso:document.getElementById('f-compromiso').value.trim(),
+    seguimiento:document.getElementById('f-seguimiento').value,
+    resultado:document.getElementById('f-resultado').value,
+    satisfaccion:starVal,
+    riesgo:document.getElementById('f-riesgo').value,
+    mora:document.getElementById('f-mora').value,
+    obs:document.getElementById('f-obs').value.trim(),
+    mes:new Date(fecha+'T12:00:00').getMonth()+1,
+    anio:new Date(fecha+'T12:00:00').getFullYear()
+  };
+  visitas.push(v);save();resetForm();
+  showMsg('Visita guardada. Total: '+visitas.length+'/35','ok');
+  updateHeader();sendToSheet(v);
+}
+
+function resetForm(){
+  ['f-empresa','f-nit','f-fecha','f-comision','f-segmento','f-estado','f-productos','f-exporta','f-destinos','f-destinos-int','f-diferenciacion','f-capacidad','f-produccion','f-barreras','f-oportunidad','f-compromiso','f-seguimiento','f-resultado','f-riesgo','f-mora','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));setStar(0);
+}
+
+function showMsg(txt,type){
+  const el=document.getElementById('form-msg');
+  el.style.display='block';
+  el.className='form-msg alert alert-'+(type==='ok'?'success':'warn');
+  el.textContent=txt;
+  setTimeout(()=>{el.style.display='none'},4000);
+}
+
+function updateHeader(){
+  const pct=Math.round(visitas.length/35*100);
+  document.getElementById('progBar').style.width=pct+'%';
+  document.getElementById('progLabel').textContent=visitas.length+' / 35 visitas completadas';
+}
+
+function renderDashboard(){
+  updateHeader();
+  const now=new Date();const mes=now.getMonth()+1;
+  const delMes=visitas.filter(v=>v.mes===mes).length;
+  const conSeg=visitas.filter(v=>v.seguimiento).length;
+  document.getElementById('m-total').textContent=visitas.length;
+  document.getElementById('m-pend').textContent=35-visitas.length;
+  document.getElementById('m-seg').textContent=conSeg;
+  document.getElementById('m-mes').textContent=delMes;
+  const meta=METAS[mes]||0;
+  let col,bg,lbl;
+  if(delMes>=meta){col='#166534';bg='#f0fdf4';lbl='En meta — '+delMes+'/'+meta+' visitas este mes'}
+  else if(delMes>=meta-2){col='#92400e';bg='#fffbeb';lbl='Atención — '+delMes+'/'+meta+' visitas este mes'}
+  else{col='#991b1b';bg='#fef2f2';lbl='Rezago — '+delMes+'/'+meta+' visitas este mes'}
+  document.getElementById('semaforo-box').innerHTML=`<div class="semaforo" style="background:${bg}"><div class="dot" style="background:${col}"></div><span style="color:${col}">${lbl}</span></div>`;
+  const conteos=[7,8,9,10,11].map(m=>visitas.filter(v=>v.mes===m&&v.anio===2026).length);
+  const maxV=Math.max(...conteos,1);
+  document.getElementById('monthBars').innerHTML=[7,8,9,10,11].map((m,i)=>{
+    const h=Math.round(conteos[i]/maxV*60)+4;
+    const act=m===mes;
+    return`<div class="bar-wrap"><div class="bar-num">${conteos[i]}</div><div class="bar" style="height:${h}px;background:${act?'#128BFF':'#cbd5e0'}"></div><div class="bar-lbl">${MESES[i]}</div></div>`;
+  }).join('');
+  const tm={};
+  visitas.forEach(v=>{if(v.temas)v.temas.split(', ').forEach(t=>{if(t)tm[t]=(tm[t]||0)+1})});
+  const sorted=Object.entries(tm).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('topTemas').innerHTML=sorted.length?sorted.map(([t,n])=>`<div class="row"><span>${t}</span><span class="badge badge-ok">${n}</span></div>`).join(''):'<div class="empty" style="padding:1rem">Sin registros aún</div>';
+}
+
+function renderHistorial(){
+  const q=(document.getElementById('buscar').value||'').toLowerCase();
+  const fil=visitas.filter(v=>v.empresa.toLowerCase().includes(q));
+  const el=document.getElementById('lista-visitas');
+  if(!fil.length){el.innerHTML='<div class="empty">Sin resultados.</div>';return;}
+  el.innerHTML=fil.map(v=>`
+    <div class="visit-row">
+      <div class="visit-top">
+        <div>
+          <div class="visit-name">${v.empresa}</div>
+          <div class="visit-meta">${v.fecha} · ${v.comision||'—'} · ${v.responsable||''}</div>
+          <div class="visit-meta">
+            ${v.resultado?`<span class="badge badge-ok">${v.resultado}</span>`:''}
+            ${v.riesgo==='Alto'||v.riesgo==='Crítico'?`<span class="badge badge-warn">⚠ Riesgo ${v.riesgo}</span>`:''}
+            ${v.satisfaccion?'★'.repeat(v.satisfaccion):''}
+          </div>
+          ${v.temas?`<div class="visit-meta">Temas: ${v.temas}</div>`:''}
+          ${v.destinos?`<div class="visit-meta">Exporta a: ${v.destinos}</div>`:''}
+          ${v.destinosInt?`<div class="visit-meta">Interés en: ${v.destinosInt}</div>`:''}
+          ${v.oportunidad?`<div class="visit-meta" style="margin-top:4px;color:#1a202c"><b>Oportunidad:</b> ${v.oportunidad}</div>`:''}
+        </div>
+        <button class="delete-btn" onclick="eliminar(${visitas.indexOf(v)})" title="Eliminar"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+function eliminar(idx){
+  if(confirm('¿Eliminar esta visita? Esta acción no se puede deshacer.')){
+    visitas.splice(idx,1);save();renderHistorial();updateHeader();
+  }
+}
+
+function saveSheetUrl(){
+  const url=document.getElementById('sheet-url').value.trim();
+  if(!url.startsWith('https://')){document.getElementById('sheet-status').innerHTML='<div class="alert alert-warn">Ingresa una URL válida de Apps Script.</div>';return;}
+  localStorage.setItem('cp_sheet_url',url);
+  document.getElementById('sheet-status').innerHTML='<div class="alert alert-success"><i class="ti ti-check"></i> URL guardada. La próxima visita que registres se enviará a Google Sheets automáticamente.</div>';
+}
+
+function sendToSheet(v){
+  const url=localStorage.getItem('cp_sheet_url');
+  if(!url) return;
+  fetch(url,{method:'POST',body:JSON.stringify(v),mode:'no-cors'}).catch(()=>{});
+}
+
+function exportCSV(){
+  if(!visitas.length){alert('No hay visitas para exportar.');return;}
+  const h=['ID visita','Fecha visita','Empresa asociada','NIT / Código','Comisión','Segmento','Estado asociado','Responsable','Resultado visita','Nivel satisfacción','Temas interés','Servicios utilizados','Oportunidad detectada','Compromiso / necesidad','Riesgo deserción','Mora de pagos','Fecha próximo seguimiento','Productos / Actividad','Exporta actualmente','Destinos actuales','Destinos de interés','Diferenciación','Capacidad instalada','Producción mensual','Barreras identificadas','Observaciones'];
+  const rows=visitas.map(v=>[v.id,v.fecha,v.empresa,v.nit,v.comision,v.segmento,v.estado,v.responsable,v.resultado,v.satisfaccion,v.temas,v.servicios,v.oportunidad,v.compromiso,v.riesgo,v.mora,v.seguimiento,v.productos,v.exporta,v.destinos,v.destinosInt,v.diferenciacion,v.capacidad,v.produccion,v.barreras,v.obs].map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`));
+  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  dl('PlanConectaPlus_'+new Date().toISOString().slice(0,10)+'.csv','data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv));
+}
+
+function exportJSON(){
+  if(!visitas.length){alert('No hay visitas para exportar.');return;}
+  dl('backup_conecta_'+new Date().toISOString().slice(0,10)+'.json','data:application/json,'+encodeURIComponent(JSON.stringify(visitas,null,2)));
+}
+
+function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d))throw new Error();visitas=d;save();updateHeader();document.getElementById('local-count').textContent=visitas.length;alert('Backup restaurado: '+visitas.length+' visitas.');}catch(err){alert('Archivo inválido.');}};
+  r.readAsText(file);
+}
+
+function dl(name,dataUri){const a=document.createElement('a');a.href=dataUri;a.download=name;a.click();}
+
+document.getElementById('f-fecha').value=new Date().toISOString().slice(0,10);
+updateHeader();renderDashboard();
+</script>
+</body>
+</html>
