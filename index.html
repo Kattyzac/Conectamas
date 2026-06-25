@@ -301,7 +301,7 @@ function showTab(t){
   if(t==='historial')renderHistorial();
   if(t==='config'){
     document.getElementById('local-count').textContent=visitas.length;
-    const u=localStorage.getItem('cp_sheet_url')||'';
+    const u=localStorage.getItem('cp_sheet_url') || 'https://script.google.com/macros/s/AKfycbyxLbBnMtvUIQjndGH-ivMO9XLrsXYJEiEdBZKTpKicmLrLLfUESoBVjIzx0Bfg3VvA/exec'||'';
     document.getElementById('sheet-url').value=u;
   }
 }
@@ -439,7 +439,7 @@ function saveSheetUrl(){
 }
 
 function sendToSheet(v){
-  const url=localStorage.getItem('cp_sheet_url');
+  const url=localStorage.getItem('cp_sheet_url') || 'https://script.google.com/macros/s/AKfycbyxLbBnMtvUIQjndGH-ivMO9XLrsXYJEiEdBZKTpKicmLrLLfUESoBVjIzx0Bfg3VvA/exec';
   if(!url) return;
   fetch(url,{method:'POST',body:JSON.stringify(v),mode:'cors'}).catch(()=>{});
 }
