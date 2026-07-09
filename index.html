@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Conecta+ | Tracker AGEXPORT</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--az:#0A1A3A;--el:#128BFF;--ci:#00CBFF;--li:#A6E22E;--bg:#ffffff;--bg2:#f7f9fc;--bg3:#eef2f7;--txt:#1a202c;--txt2:#718096;--bd:#e2e8f0;--bd2:#cbd5e0;--ok:#38a169;--warn:#d97706;--danger:#e53e3e}
@@ -112,7 +113,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="card-title">Temas más frecuentes</div>
     <div class="temas-freq" id="topTemas"><div class="empty" style="padding:1rem">Sin registros aún</div></div>
   </div>
-  <button class="btn-sec" onclick="exportCSV()"><i class="ti ti-download"></i> Exportar CSV para Excel de gerencia</button>
+  <button class="btn-sec" onclick="exportXLSX()"><i class="ti ti-download"></i> Exportar Excel para gerencia (.xlsx)</button>
   <button class="btn-sec" onclick="exportJSON()"><i class="ti ti-download"></i> Backup completo (JSON)</button>
 </div>
 
@@ -276,7 +277,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="card">
     <div class="card-title">Respaldo de datos locales</div>
     <div style="font-size:13px;color:var(--txt2);margin-bottom:.75rem">Visitas en este dispositivo: <b id="local-count">0</b></div>
-    <button class="btn-sec" onclick="exportCSV()"><i class="ti ti-download"></i> Exportar CSV (formato gerencia)</button>
+    <button class="btn-sec" onclick="exportXLSX()"><i class="ti ti-download"></i> Exportar Excel para gerencia (.xlsx)</button>
     <button class="btn-sec" onclick="exportJSON()"><i class="ti ti-download"></i> Backup JSON completo</button>
     <button class="btn-sec" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i> Restaurar desde backup JSON</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)" />
@@ -438,19 +439,54 @@ function saveSheetUrl(){
   document.getElementById('sheet-status').innerHTML='<div class="alert alert-success"><i class="ti ti-check"></i> URL guardada. La próxima visita que registres se enviará a Google Sheets automáticamente.</div>';
 }
 
-function sendToSheet(v){
-  const url=localStorage.getItem('cp_sheet_url') || 'https://script.google.com/macros/s/AKfycbyxLbBnMtvUIQjndGH-ivMO9XLrsXYJEiEdBZKTpKicmLrLLfUESoBVjIzx0Bfg3VvA/exec';
-  if(!url) return;
-  fetch(url,{method:'POST',body:JSON.stringify(v),mode:'cors'}).catch(()=>{});
+function sendToSheet(v){ sendToForm(v); }
+
+function sendToForm(v){
+  const body=new URLSearchParams();
+  body.append("entry.355459256", v.id||"");
+  body.append("entry.161111106", v.fecha||"");
+  body.append("entry.1604024223", v.empresa||"");
+  body.append("entry.1798981652", v.nit||"");
+  body.append("entry.1377489234", v.comision||"");
+  body.append("entry.922531405", v.segmento||"");
+  body.append("entry.926167958", v.estado||"");
+  body.append("entry.884916893", v.responsable||"");
+  body.append("entry.820734480", v.resultado||"");
+  body.append("entry.651445698", String(v.satisfaccion||""));
+  body.append("entry.1786896550", v.temas||"");
+  body.append("entry.754434224", v.servicios||"");
+  body.append("entry.1722359552", v.oportunidad||"");
+  body.append("entry.984566418", v.compromiso||"");
+  body.append("entry.447664456", v.riesgo||"");
+  body.append("entry.39483294", v.mora||"");
+  body.append("entry.1320179001", v.seguimiento||"");
+  body.append("entry.591190038", v.productos||"");
+  body.append("entry.1389429575", v.exporta||"");
+  body.append("entry.1589609660", v.destinos||"");
+  body.append("entry.1684068270", v.destinosInt||"");
+  body.append("entry.1614572359", v.diferenciacion||"");
+  body.append("entry.801440998", v.capacidad||"");
+  body.append("entry.789535830", v.produccion||"");
+  body.append("entry.1155578142", v.barreras||"");
+  body.append("entry.494872110", v.obs||"");
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfDFcCVcGgr6hFW10PgvRHNvvcP4ht2SQOwjFysMpqFyn5CwQ/formResponse",{
+    method:"POST", mode:"no-cors",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:body.toString()
+  }).catch(()=>{});
 }
 
-function exportCSV(){
+function exportXLSX(){
   if(!visitas.length){alert('No hay visitas para exportar.');return;}
   const h=['ID visita','Fecha visita','Empresa asociada','NIT / Código','Comisión','Segmento','Estado asociado','Responsable','Resultado visita','Nivel satisfacción','Temas interés','Servicios utilizados','Oportunidad detectada','Compromiso / necesidad','Riesgo deserción','Mora de pagos','Fecha próximo seguimiento','Productos / Actividad','Exporta actualmente','Destinos actuales','Destinos de interés','Diferenciación','Capacidad instalada','Producción mensual','Barreras identificadas','Observaciones'];
-  const rows=visitas.map(v=>[v.id,v.fecha,v.empresa,v.nit,v.comision,v.segmento,v.estado,v.responsable,v.resultado,v.satisfaccion,v.temas,v.servicios,v.oportunidad,v.compromiso,v.riesgo,v.mora,v.seguimiento,v.productos,v.exporta,v.destinos,v.destinosInt,v.diferenciacion,v.capacidad,v.produccion,v.barreras,v.obs].map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`));
-  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
-  dl('PlanConectaPlus_'+new Date().toISOString().slice(0,10)+'.csv','data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv));
+  const rows=visitas.map(v=>[v.id,v.fecha,v.empresa,v.nit,v.comision,v.segmento,v.estado,v.responsable,v.resultado,v.satisfaccion,v.temas,v.servicios,v.oportunidad,v.compromiso,v.riesgo,v.mora,v.seguimiento,v.productos,v.exporta,v.destinos,v.destinosInt,v.diferenciacion,v.capacidad,v.produccion,v.barreras,v.obs]);
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([h,...rows]);
+  ws['!cols']=[{wch:10},{wch:12},{wch:28},{wch:14},{wch:22},{wch:22},{wch:12},{wch:18},{wch:22},{wch:8},{wch:30},{wch:25},{wch:35},{wch:30},{wch:12},{wch:10},{wch:18},{wch:35},{wch:20},{wch:25},{wch:25},{wch:35},{wch:20},{wch:20},{wch:35},{wch:35}];
+  XLSX.utils.book_append_sheet(wb,'Visitas',ws);
+  XLSX.writeFile(wb,'PlanConectaPlus_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
+function exportCSV(){ exportXLSX(); }
 
 function exportJSON(){
   if(!visitas.length){alert('No hay visitas para exportar.');return;}
